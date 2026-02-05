@@ -1,0 +1,47 @@
+// 1. Garante que o usuário existe
+MERGE (:Usuario {nome: "Jorge", idade: 30, id: 105});
+MERGE (:Usuario {idade: 39, nome: "Ana Beatriz Silva", id: 102});
+MERGE (:Usuario {idade:20, nome: "Micaela", id:1});
+MERGE (:Usuario {idade: 40, nome: "Steven Spielberg", id: 101});
+MERGE (:Usuario {idade: 22, nome: "Jorge C. Nunes", id: 103})
+
+// 3. Garante que o filme existe (ou apenas localiza)
+MERGE (:Filme {titulo: "Oppenheimer", ano: 2023});
+MERGE (:Filme {titulo: "Tudo e todos", ano: 2025});
+
+//Genero
+MERGE (:Genero {nome: "Dorama"});
+
+
+MERGE (t:Filme {titulo: "Tudo e todos"})
+MERGE (g:Genero {nome: "Dorama"})
+MERGE (t)-[:Genero]->(g)
+
+// 4. Cria a relação
+MERGE (u:Usuario {nome: "Jorge"})
+MERGE (f:Filme {titulo: "Oppenheimer"})
+MERGE (u)-[:GOSTOU {nota: 8, data:date("2025-12-31")}]->(f);
+
+MERGE (u:Usuario {nome: "Ana Beatriz Silva"})
+MERGE (f:Filme {titulo: "Oppenheimer"})
+MERGE (u)-[:ASSISTIU {nota: 10, data:date("2023-09-20")}]->(f);
+
+MERGE (u:Usuario {nome: "Micaela"})
+MERGE (t:Filme {titulo: "Tudo e todos"})
+MERGE (u)-[:ASSISTIU {nota: 10, data:date("2025-01-20")}]->(t);
+
+MERGE (S:Usuario {nome: "Steven Spielberg"})
+MERGE (g:Genero {nome: "Dorama"})
+MERGE (S)-[:GOSTOU {nota: 9}]-(g);
+
+MERGE (J:Usuario {nome: "Jorge C. Nunes"})
+MERGE (g:Genero {nome: "Dorama"})
+MERGE (J)-[:ASSISTIU {nota: 1}]-(g);
+
+MERGE (S:Usuario {nome: "Steven Spielberg"})
+MERGE (f:Filme {titulo: "Tudo e todos"})
+MERGE (f)-[:TAMBEM_PODES_GOSTAR_DE]->(S);
+
+MATCH (S:Usuario {nome: "Steven Spielberg"})-[r]->(f:Filme {titulo: "Tudo e todos"}) 
+WHERE r.id = 9
+DELETE r
